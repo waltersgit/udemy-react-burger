@@ -2,7 +2,7 @@
  * Created by peter on 2018/4/18.
  */
 import * as actionTypes from '../actions/actionTypes';
-import { updateObject } from '../utilitiy';
+import { updateObject } from '../../shared/utilitiy';
 
 const initialState = {
     token: null,
