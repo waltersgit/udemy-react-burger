@@ -8,7 +8,7 @@ import axios from '../../../axios-order';
 import Input from '../../../components/UI/Input/Input';
 import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
 import * as actions from '../../../store/actions/index';
-import { updateObject } from '../../../shared/utilitiy';
+import { updateObject,checkValidaty } from '../../../shared/utilitiy';
 class ContactData extends Component{
     state = {
         orderForm:{
@@ -24,7 +24,10 @@ class ContactData extends Component{
                 },
                 valid: false,
                 touched: false,
-                errorMessage: 'required'
+                errorMessage: 'required',
+                error: {
+                    required: 'shit required'
+                }
             },
             street: {
                 elementType: 'input',
@@ -38,7 +41,10 @@ class ContactData extends Component{
                 },
                 valid: false,
                 touched: false,
-                errorMessage: 'required'
+                errorMessage: 'required',
+                error: {
+                    required: 'shit required'
+                }
             },
             zipCode: {
                 elementType: 'input',
@@ -54,7 +60,12 @@ class ContactData extends Component{
                 },
                 valid: false,
                 touched: false,
-                errorMessage: '5 length'
+                errorMessage: '5 length',
+                error: {
+                    required: 'shit required',
+                    minLength: 'shit minLength',
+                    maxLength: 'shit maxLength'
+                }
             },
             country: {
                 elementType: 'input',
@@ -68,7 +79,10 @@ class ContactData extends Component{
                 },
                 valid: false,
                 touched: false,
-                errorMessage: 'required'
+                errorMessage: 'required',
+                error: {
+                    required: 'shit required'
+                }
             },
             email: {
                 elementType: 'input',
@@ -78,11 +92,16 @@ class ContactData extends Component{
                 },
                 value: '',
                 validation: {
-                    required: true
+                    required: true,
+                    isEmail: true
                 },
                 valid: false,
                 touched: false,
-                errorMessage: 'please email value'
+                errorMessage: 'please email value',
+                error: {
+                    required: 'shit required',
+                    isEmail: 'shit email'
+                }
             },
             deliverMethod: {
                 elementType: 'select',
@@ -116,22 +135,22 @@ class ContactData extends Component{
         this.props.onOrderBurger(order, this.props.token);
     }
 
-    checkValidaty(value, rules) {
-        let isValid = true;
-        if(!rules){
-            return true;
-        }
-        if(rules.required){
-            isValid = value.trim() !== '' && isValid;
-        }
-        if(rules.minLength){
-            isValid = value.length >= rules.minLength && isValid;
-        }
-        if(rules.maxLength){
-            isValid = value.length <= rules.maxLength && isValid;
-        }
-        return isValid;
-    }
+    // checkValidaty(value, rules) {
+    //     let isValid = true;
+    //     if(!rules){
+    //         return true;
+    //     }
+    //     if(rules.required){
+    //         isValid = value.trim() !== '' && isValid;
+    //     }
+    //     if(rules.minLength){
+    //         isValid = value.length >= rules.minLength && isValid;
+    //     }
+    //     if(rules.maxLength){
+    //         isValid = value.length <= rules.maxLength && isValid;
+    //     }
+    //     return isValid;
+    // }
 
     inputChangedHandler = (event, inputIdentifier) => {
         const updatedOrderForm = {
@@ -141,9 +160,13 @@ class ContactData extends Component{
             ...updatedOrderForm[inputIdentifier]
         }
         updateFormElement.value = event.target.value;
-        updateFormElement.valid = this.checkValidaty(updateFormElement.value, updateFormElement.validation);
+        var arr = checkValidaty(this.state.orderForm, updateFormElement.value, updateFormElement.validation, inputIdentifier);
+        // updateFormElement.valid = this.checkValidaty(updateFormElement.value, updateFormElement.validation);
+        updateFormElement.valid = arr[0];
+        updateFormElement.errorMessage = arr[1];
         updateFormElement.touched = true;
         updatedOrderForm[inputIdentifier] = updateFormElement;
+
         let formIsValid = true;
         for (let inputIdentifiers in updatedOrderForm){
             formIsValid = updatedOrderForm[inputIdentifiers].valid && formIsValid;

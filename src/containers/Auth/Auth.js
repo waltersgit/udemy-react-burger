@@ -7,6 +7,7 @@ import Button from '../../components/UI/Button/Button';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import classes from './Auth.css'
 import * as actions from '../../store/actions/index';
+import {checkValidaty} from '../../shared/utilitiy';
 
 class Auth extends Component {
     state = {
@@ -59,54 +60,54 @@ class Auth extends Component {
         }
     }
 
-    checkValidaty(value, rules, formName) {
-        let isValid = true;
-        let error = '';
-        if(!rules){
-            return true;
-        }
-        if(rules.required){
-            isValid = value.trim() !== '' && isValid;
-            error = 'required';
-            if(isValid === false){
-                return this.getMsg(isValid, error, formName);
-            }
-        }
-        if(rules.minLength){
-            isValid = value.length >= rules.minLength && isValid;
-            error = 'minLength';
-            if(isValid === false){
-                return this.getMsg(isValid, error, formName);
-            }
-        }
-        if(rules.maxLength){
-            isValid = value.length <= rules.maxLength && isValid;
-            error = 'maxLength';
-            if(isValid === false){
-                return this.getMsg(isValid, error, formName);
-            }
-        }
-        if(rules.isEmail){
-            const pattern = /\w+(\.\w+)*@\w+(\.\w+)+$/
-            isValid = pattern.test(value) && isValid;
-            error = 'isEmail';
-            if(isValid === false){
-                return this.getMsg(isValid, error, formName);
-            }
-        }
-        return this.getMsg(isValid, error, formName);
-        // return isValid;
-    }
-
-    getMsg = (isValid, error, formName) => {
-        if(isValid === false && error !== ''){
-            var msg = this.state.controls[formName].error[error];
-        }
-        return [isValid,msg];
-    }
+    // checkValidaty(value, rules, formName) {
+    //     let isValid = true;
+    //     let error = '';
+    //     if(!rules){
+    //         return true;
+    //     }
+    //     if(rules.required){
+    //         isValid = value.trim() !== '' && isValid;
+    //         error = 'required';
+    //         if(isValid === false){
+    //             return this.getMsg(isValid, error, formName);
+    //         }
+    //     }
+    //     if(rules.minLength){
+    //         isValid = value.length >= rules.minLength && isValid;
+    //         error = 'minLength';
+    //         if(isValid === false){
+    //             return this.getMsg(isValid, error, formName);
+    //         }
+    //     }
+    //     if(rules.maxLength){
+    //         isValid = value.length <= rules.maxLength && isValid;
+    //         error = 'maxLength';
+    //         if(isValid === false){
+    //             return this.getMsg(isValid, error, formName);
+    //         }
+    //     }
+    //     if(rules.isEmail){
+    //         const pattern = /\w+(\.\w+)*@\w+(\.\w+)+$/
+    //         isValid = pattern.test(value) && isValid;
+    //         error = 'isEmail';
+    //         if(isValid === false){
+    //             return this.getMsg(isValid, error, formName);
+    //         }
+    //     }
+    //     return this.getMsg(isValid, error, formName);
+    //     // return isValid;
+    // }
+    //
+    // getMsg = (isValid, error, formName) => {
+    //     if(isValid === false && error !== ''){
+    //         var msg = this.state.controls[formName].error[error];
+    //     }
+    //     return [isValid,msg];
+    // }
 
     inputChangedHandler = (event, controlName) => {
-        var arr = this.checkValidaty(event.target.value, this.state.controls[controlName].validation, controlName);
+        var arr = checkValidaty(this.state.controls, event.target.value, this.state.controls[controlName].validation, controlName);
         const updatedControls = {
             ...this.state.controls,
             [controlName]: {
